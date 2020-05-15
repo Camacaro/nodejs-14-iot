@@ -1,0 +1,26 @@
+CREATE ROLE platzi WITH LOGIN PASSWORD 'platzi';
+
+CREATE DATABASE platziverse;
+
+GRANT ALL PRIVILEGES ON DATABASE platziverse TO platzi;
+
+/*************************************************************/
+
+con el const debug = require('debug')('platziverse:db:setup')
+puedo hacer logs a los archivos y saber donde fue 
+
+Hacer preguntras con la consola
+npm i inquirer
+
+estilizar string en consola
+npm i chalk
+
+/*************************************************************/
+
+Test unitarios con Ava
+
+para realizar la prueba unitara con test vamos a usar 
+npm i sqlite3 --save-dev
+
+esto es una base de datos en memoria para poder borrar jugar con esa db
+/*************************************************************/

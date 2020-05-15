@@ -1,0 +1,30 @@
+{
+  "name": "micro-db",
+  "version": "1.0.0",
+  "description": "A Simple IoT Platform - DB Module",
+  "main": "index.js",
+  "scripts": {
+    "setup": "@powershell $env:DEBUG='platziverse:*';node setup.js",
+    "lint": "standard --fix",
+    "test": "@powershell $env:DEBUG='platziverse:*'; nyc --reporter=lcov ava --verbose"
+  },
+  "author": "Jesus Camacaro",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^3.8.2",
+    "nyc": "^15.0.1",
+    "proxyquire": "^2.1.3",
+    "sinon": "^9.0.2",
+    "sqlite3": "^4.2.0",
+    "standard": "^14.3.4"
+  },
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "debug": "^4.1.1",
+    "defaults": "^1.0.3",
+    "inquirer": "^7.1.0",
+    "pg": "^8.2.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.21.8"
+  }
+}
