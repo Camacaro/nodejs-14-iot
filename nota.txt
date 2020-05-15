@@ -23,4 +23,14 @@ para realizar la prueba unitara con test vamos a usar
 npm i sqlite3 --save-dev
 
 esto es una base de datos en memoria para poder borrar jugar con esa db
+
+con esto creamos los coverge de nuestros test 
+npm i nyc --save-dev
+
+con sinon podemos crear mocks
+npm i sinon --save-dev
+
+
+con esto puedo requerir modulos y seterar sus requeri dentrod de el
+npm i proxyquire --save-dev
 /*************************************************************/
