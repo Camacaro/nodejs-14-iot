@@ -22,7 +22,7 @@ module.exports = function setupMetric (MetricModel, AgentModel) {
 
   async function findByTypeAgentUuid (type, uuid) {
     return MetricModel.findAll({
-      attributes: ['id', 'type', 'value', 'createAt'],
+      attributes: ['id', 'type', 'value', 'createdAt'],
       where: { type },
       limit: 20,
       order: [['createdAt', 'DESC']],
