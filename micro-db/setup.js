@@ -5,19 +5,33 @@ const chalk = require('chalk')
 
 const db = require('./')
 
+const argv = require ('yargs')
+  .boolean(['y','yes'])
+  .argv
+
+// console.dir([ argv.y, argv.yes ]);
+// console.dir(argv._);
+
 // hacer preguntas
 const prompt = inquirer.createPromptModule()
-
 async function setup () {
-  // Preguntar por consola
-  const answer = await prompt([
-    {
-      type: 'confirm',
-      name: 'setup',
-      message: 'This will destroy your databaase, are you sure?'
-    }
-  ])
+  let answer;
 
+  if ( argv.y || argv.yes ) {
+    answer = {
+      setup: true
+    } 
+  } else {
+    // Preguntar por consola
+    answer = await prompt([
+      {
+        type: 'confirm',
+        name: 'setup',
+        message: 'This will destroy your databaase, are you sure?'
+      }
+    ])
+  }
+  
   if (!answer.setup) {
     return console.log('Nothing happend :)')
   }
@@ -31,7 +45,6 @@ async function setup () {
     port: 5432,
     logging: log => debug(log),
     setup: true
-
   }
 
   await db(config).catch(handleFatalError)
