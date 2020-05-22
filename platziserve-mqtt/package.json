@@ -1,0 +1,25 @@
+{
+  "name": "platziserve-mqtt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A Simple IoT Platform - MQTT Server",
+  "main": "server.js",
+  "scripts": {
+    "lint": "standard --fix",
+    "start": "@powershell $env:NODE_ENV='production'; node server.js",
+    "start-dev": "@powershell $env:DEBUG='platziverse:*'; nodemon server.js"
+  },
+  "author": "Jesus Camacaro",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.4",
+    "standard": "^14.3.4"
+  },
+  "dependencies": {
+    "chalk": "^4.0.0",
+    "debug": "^4.1.1",
+    "mosca": "^2.8.3",
+    "platziserve-db": "file:../platziserve-db",
+    "redis": "^3.0.2"
+  }
+}

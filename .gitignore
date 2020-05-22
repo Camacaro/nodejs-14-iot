@@ -1,3 +1,8 @@
-micro-db/node_modules
-micro-db/coverage
-micro-db/.nyc_output
+platziserve-db/node_modules
+platziserve-db/coverage
+platziserve-db/.nyc_output
+
+platziserve-mqtt/node_modules
+
+platziserve-mqtt-client/node_modules
+
