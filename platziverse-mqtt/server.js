@@ -5,7 +5,7 @@ const mosca = require('mosca')
 const redis = require('redis')
 const chalk = require('chalk')
 const db = require('platziserve-db')
-const { parsePayload } = require('./utils')
+const { parsePayload } = require('platziverse-db')
 
 var ascoltatore = {
   type: 'redis',

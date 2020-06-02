@@ -19,7 +19,8 @@
     "chalk": "^4.0.0",
     "debug": "^4.1.1",
     "mosca": "^2.8.3",
-    "platziserve-db": "file:../platziserve-db",
+    "platziverse-db": "file:../platziverse-db",
+    "platziverse-utils": "file:../platziverse-utils",
     "redis": "^3.0.2"
   }
 }

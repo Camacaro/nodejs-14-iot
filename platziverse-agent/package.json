@@ -1,0 +1,23 @@
+{
+  "name": "platziverse-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A Simple IoT Platform - Agent",
+  "main": "index.js",
+  "scripts": {
+    "lint": "standard --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesus Camacaro",
+  "license": "ISC",
+  "devDependencies": {
+    "standard": "^14.3.4"
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "defaults": "^1.0.3",
+    "mqtt": "^4.1.0",
+    "platziverse-utils": "file:../platziverse-utils",
+    "uuid": "^8.1.0"
+  }
+}

@@ -1,8 +1,9 @@
-platziserve-db/node_modules
-platziserve-db/coverage
-platziserve-db/.nyc_output
+platziverse-db/node_modules
+platziverse-db/coverage
+platziverse-db/.nyc_output
 
-platziserve-mqtt/node_modules
+platziverse-mqtt/node_modules
 
-platziserve-mqtt-client/node_modules
+platziverse-mqtt-client/node_modules
 
+platziverse-agent/node_modules
