@@ -4,8 +4,8 @@ const debug = require('debug')('platziverse:mqtt')
 const mosca = require('mosca')
 const redis = require('redis')
 const chalk = require('chalk')
-const db = require('platziserve-db')
-const { parsePayload } = require('platziverse-db')
+const db = require('platziverse-db')
+const { parsePayload } = require('platziverse-utils')
 
 var ascoltatore = {
   type: 'redis',
