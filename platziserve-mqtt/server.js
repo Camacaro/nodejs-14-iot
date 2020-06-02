@@ -122,12 +122,12 @@ server.on('published', async (packet, client) => {
             })
           })
         }
-        
+
         /**
-         * Factorizar el almacenamiento de metricas 
+         * Factorizar el almacenamiento de metricas
          * de serial a paralelo
          */
-        
+
         // Store Metrics - SERIAL
         // for (const metric of payload.metrics) {
         //   let m
@@ -144,28 +144,27 @@ server.on('published', async (packet, client) => {
         // Store Metrics - PARALELO
         let result
         try {
-          const promises = payload.metrics.map( metric => new Promise( (resolve, reject) => {
+          const promises = payload.metrics.map(metric => new Promise((resolve, reject) => {
             Metric.create(agent.uuid, metric)
               .then(
                 (metricDB) => {
                   resolve(`Metric ${metricDB.id} saved on agent ${agent.uuid}`)
-                } 
+                }
               )
               .catch(
                 (e) => {
                   reject(`Error con la metric ${JSON.stringify(metric)}`)
-                } 
+                }
               )
-          }) )
+          }))
           result = await Promise.all(promises)
         } catch (error) {
           handleFatalError(error)
         }
 
-        result.map( message => {
+        result.map(message => {
           debug(message)
         })
-
       }
       break
     }
