@@ -4,5 +4,8 @@
 const {db} = require('platziverse-utils');
 
 module.exports = {
-    db
+    db,
+    auth: {
+        secret: process.env.SECRET || 'platzi'
+    }
 }
