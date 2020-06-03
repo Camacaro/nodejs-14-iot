@@ -3,16 +3,21 @@
 const test = require('ava')
 const request = require('supertest')
 const proxyquire = require('proxyquire');
-
+const util = require('util');
 const sinon = require('sinon');
 
+const config = require('../config')
+
 const { agentFixtures, metricFixtures } = require('platziverse-utils');
+const auth = require('../auth')
+const sign = util.promisify(auth.sign)
 
 let sandbox = null
 let server = null
 let dbStub = null
 let AgentStub = {}
 let MetricStub = {}
+let token = null
 
 const uuid = 'yyy-yyy-yyy'
 const uuidBad = 'yyy-yyy-123'
@@ -49,6 +54,8 @@ test.beforeEach( async () => {
         .returns(Promise.resolve(metricFixtures.findByTypeAgentUuid(type, uuid))) 
         
 
+    token = await sign({admin: true, username: 'platzi'}, config.auth.secret)
+
     const api = proxyquire('../api', {
         'platziverse-db': dbStub
     })
@@ -69,6 +76,7 @@ test.afterEach( () => {
 test.serial.cb('api/agents', t => {
     request(server)
     .get('/api/agents')
+    .set('Authorization', `Bearer ${token}`)
     .expect(200)
     .expect('Content-Type', /json/)
     .end((err, res) => {
@@ -77,6 +85,18 @@ test.serial.cb('api/agents', t => {
         let expected = JSON.stringify( agentFixtures.connected )
         t.deepEqual(body, expected, 'response body should be the expected')
         // este end lo uso cuando trabajo con el callback
+        t.end()
+    })
+})
+
+test.serial.cb('api/agents - invalid signature', t => {
+    request(server)
+    .get('/api/agents')
+    .set('Authorization', `Bearer ${token}bad`)
+    .expect(500)
+    .expect('Content-Type', /json/)
+    .end((err, res) => {
+        t.regex(res.body.error, /invalid signature/, 'Error should invalid signature');
         t.end()
     })
 })
@@ -102,10 +122,6 @@ test.serial.cb('/api/agents/:uuid - not found', t => {
         .expect(404)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-            console.log(res.body);
-            if (err) {
-                console.log(err);
-            }
             t.truthy(res.body.error, 'should return an error');
             t.regex(res.body.error, /not found/, 'Error should contains not found');
             t.end();
@@ -144,8 +160,6 @@ test.serial.cb('/api/metrics/:uuid/:type', t => {
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
-            console.log(res.body);
-            console.log(metricFixtures.findByTypeAgentUuid(type, uuid));
             t.falsy(err, 'should not return an error');
             let body = JSON.stringify(res.body);
             let expected = JSON.stringify(metricFixtures.findByTypeAgentUuid(type, uuid));
