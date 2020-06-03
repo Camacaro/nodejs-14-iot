@@ -3,8 +3,7 @@
 const test = require('ava')
 const proxyquire = require('proxyquire')
 const sinon = require('sinon')
-const agentFixtures = require('./fixtures/agent')
-const metricFixtures = require('./fixtures/metric')
+const { agentFixtures, metricFixtures } = require('platziverse-utils');
 
 const extend = function (obj, values) {
     const clone = Object.assign({}, obj)
