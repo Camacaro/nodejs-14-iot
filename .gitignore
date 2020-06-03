@@ -7,3 +7,6 @@ platziverse-mqtt/node_modules
 platziverse-mqtt-client/node_modules
 
 platziverse-agent/node_modules
+
+platziverse-api/node_modules
+platziverse-utils/node_modules
