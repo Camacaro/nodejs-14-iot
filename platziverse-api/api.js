@@ -3,13 +3,22 @@
 const debug = require('debug')('platziverse:api:routes')
 const express = require('express')
 const auth = require('express-jwt')
+const util = require('util')
+const guard = require('express-jwt-permissions')()
 const db = require('platziverse-db');
 
 const config = require('./config')
 
+const jwt = require('./auth')
+const sign = util.promisify(jwt.sign)
+
 const api = express.Router()
 
 let services, Agent, Metric 
+
+api.get('/test', async (req, res, next) => {
+  res.send({})
+})
 
 api.use('*', async (req, res, next) => {
   if(!services) {
@@ -27,9 +36,26 @@ api.use('*', async (req, res, next) => {
   next();
 })
 
-api.get('/agents', auth(config.auth) ,async (req, res, next) => {
+api.get('/token/:permisos', async (req, res, next) => {
+
+  const { permisos } = req.params;
+
+  const permisosArray = permisos.split(',');
+
+  const token = await sign({
+    admin: true, 
+    username: 'platzi',
+    permissions: permisosArray
+  }, 
+  config.auth.secret)
+
+  res.send({token});
+})
+
+api.get('/agents', [auth(config.auth), guard.check(['agents:read'])] ,async (req, res, next) => {
   debug('A reqiues has come to /agents')
 
+  // El decoded del Token se guarda en user
   const { user } = req
 
   console.log(user);
@@ -53,11 +79,8 @@ api.get('/agents', auth(config.auth) ,async (req, res, next) => {
   res.send(agents)
 })
 
-api.get('/test', async (req, res, next) => {
-  res.send({})
-})
 
-api.get('/agents/:uuid', async (req, res, next) => {
+api.get('/agents/:uuid', [auth(config.auth), guard.check(['agents:read'])], async (req, res, next) => {
   
   const { uuid } = req.params
 
@@ -78,7 +101,7 @@ api.get('/agents/:uuid', async (req, res, next) => {
   res.send(agent)
 })
 
-api.get('/metrics/:uuid', async (req, res, next) => {
+api.get('/metrics/:uuid', [auth(config.auth), guard.check(['metrics:read']) ], async (req, res, next) => {
   const { uuid } = req.params
 
   debug(`A reqiues has come to /metrics/${uuid}`)
@@ -98,7 +121,7 @@ api.get('/metrics/:uuid', async (req, res, next) => {
   res.send(metrics)
 })
 
-api.get('/metrics/:uuid/:type', async (req, res, next) => {
+api.get('/metrics/:uuid/:type', [auth(config.auth), guard.check(['metrics:read']) ], async (req, res, next) => {
   const { uuid, type } = req.params
 
   debug(`A reqiues has come to /metrics/${uuid}/${type}`)

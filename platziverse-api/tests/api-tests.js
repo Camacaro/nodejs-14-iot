@@ -54,7 +54,17 @@ test.beforeEach( async () => {
         .returns(Promise.resolve(metricFixtures.findByTypeAgentUuid(type, uuid))) 
         
 
-    token = await sign({admin: true, username: 'platzi'}, config.auth.secret)
+    token = await sign(
+        {
+            admin: true, 
+            username: 'platzi',
+            permissions: [
+                'metrics:read',
+                'agents:read'
+            ]
+        }, 
+        config.auth.secret
+    )
 
     const api = proxyquire('../api', {
         'platziverse-db': dbStub
@@ -104,6 +114,7 @@ test.serial.cb('api/agents - invalid signature', t => {
 test.serial.cb(`api/agents/:uuid`, t => {
     request(server)
     .get(`/api/agents/${uuid}`)
+    .set('Authorization', `Bearer ${token}`)
     .expect(200)
     .expect('Content-Type', /json/)
     .end((err, res) => {
@@ -119,6 +130,7 @@ test.serial.cb(`api/agents/:uuid`, t => {
 test.serial.cb('/api/agents/:uuid - not found', t => {
     request(server)
         .get(`/api/agents/${uuidBad}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(404)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -131,6 +143,7 @@ test.serial.cb('/api/agents/:uuid - not found', t => {
 test.serial.cb('/api/metrics/:uuid', t => {
     request(server)
         .get(`/api/metrics/${uuid}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -145,6 +158,7 @@ test.serial.cb('/api/metrics/:uuid', t => {
 test.serial.cb('/api/metrics/:uuid - not found', t => {
     request(server)
         .get(`/api/metrics/${uuidBad}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(404)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -157,6 +171,7 @@ test.serial.cb('/api/metrics/:uuid - not found', t => {
 test.serial.cb('/api/metrics/:uuid/:type', t => {
     request(server)
         .get(`/api/metrics/${uuid}/${type}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .expect('Content-Type', /json/)
         .end((err, res) => {
@@ -171,6 +186,7 @@ test.serial.cb('/api/metrics/:uuid/:type', t => {
 test.serial.cb('/api/metrics/:uuid/:type - not found', t => {
     request(server)
         .get(`/api/metrics/${uuidBad}/${type}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(404)
         .expect('Content-Type', /json/)
         .end((err, res) => {
