@@ -34,3 +34,14 @@ npm i sinon --save-dev
 con esto puedo requerir modulos y seterar sus requeri dentrod de el
 npm i proxyquire --save-dev
 /*************************************************************/
+
+Levantar Servicios 
+
+1 platziver-api
+npm run start-dev
+
+2 platziver-mqtt
+npm run start-dev
+
+3 platziver-agent
+node example/oneAgent.js o example/veryAgents.js

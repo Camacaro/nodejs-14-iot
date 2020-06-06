@@ -1,4 +1,4 @@
-const PlatziverseAgent = require('../')
+const PlatziverseAgent = require('..')
 
 const agent = new PlatziverseAgent({
     name: 'myapp',

@@ -1,39 +1,82 @@
 'use strict'
 
 const debug = require('debug')('platziverse:web')
-const chalk = require('chalk');
 const http = require('http')
-const express = require('express');
-const path = require('path');
-const socketIO = require('socket.io')
+const path = require('path')
+const express = require('express')
+const socketio = require('socket.io')
+const chalk = require('chalk')
+const PlatziverseAgent = require('platziverse-agent')
 const { handleError } = require('platziverse-utils');
 
-const port = process.env.PORT || 8181
-const app= express()
-const server = http.createServer(app)
+const proxy = require('./proxy')
+const { pipe } = require('./utils')
 
-const io = socketIO(server)
+const port = process.env.PORT || 8080
+const app = express()
+const server = http.createServer(app)
+const io = socketio(server)
+const agent = new PlatziverseAgent()
 
 app.use(express.static(path.join(__dirname, 'public')))
+app.use('/', proxy)
 
-// sockect.io / webSockets
+const AgentMessage = 'agent/message';
+const AgentConnected = 'agent/connected';
+const AgentDisConnected = 'agent/disconnected';
+
+
+// Socket.io / WebSockets
 io.on('connect', socket => {
-    debug(`Connected ${socket.id}`)
+  debug(`Connected ${socket.id}`)
 
-    // Escuchando mensando del cliente / web
-    socket.on('agent/message', payload => {
-        console.log(payload);
-    })
+  //Este pipe reemplaza a los agent.on
+  pipe(agent, socket)
 
-    setInterval( () => {
-        // Enviar mensaje al cliente
-        socket.emit('agent/message', {agent: 'xxx-yyy'})
-    }, 2000)
+  // *******************************************************
+
+  // agent.on(AgentMessage, payload => {
+  //     socket.emit(AgentMessage, payload)
+  // })
+
+  // agent.on(AgentConnected, payload => {
+  //     socket.emit(AgentConnected, payload)
+  // })
+
+  // agent.on(AgentDisConnected, payload => {
+  //     socket.emit(AgentDisConnected, payload)
+  // })
+
+  // *******************************************************
+
+  // Ejemplo de socket IO
+  // // Escuchando mensando del cliente / web
+  // socket.on('agent/message', payload => {
+  //     console.log(payload);
+  // })
+
+  // setInterval( () => {
+  //     // Enviar mensaje al cliente
+  //     socket.emit('agent/message', {agent: 'xxx-yyy'})
+  // }, 2000)
 })
 
-server.listen(port, () => {
-    console.log(`${chalk.green(['plaziverse-web'])} server listing on port ${port}`);
+// Express Error Handler
+app.use((err, req, res, next) => {
+  debug(`Error: ${err.message}`)
+
+  if (err.message.match(/not found/)) {
+    return res.status(404).send({ error: err.message })
+  }
+
+  res.status(500).send({ error: err.message })
 })
+
 
 process.on('uncaughtException', handleError.fatal)
-process.on('unhandledRejection', handleError.normal)
+process.on('unhandledRejection', handleError.fatal)
+
+server.listen(port, () => {
+  console.log(`${chalk.green('[platziverse-web]')} server listening on port ${port}`)
+  agent.connect()
+})
