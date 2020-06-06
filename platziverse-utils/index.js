@@ -2,6 +2,7 @@
 
 const agentFixtures = require('./fixtures/agent')
 const metricFixtures = require('./fixtures/metric')
+const handleError = require('./handlerError');
 
 const debug = require('debug')('platziverse:utils')
 
@@ -29,9 +30,12 @@ const db = {
   logging: log => debug(log)
 }
 
+
+
 module.exports = {
   parsePayload,
   db,
   agentFixtures,
-  metricFixtures
+  metricFixtures,
+  handleError
 }

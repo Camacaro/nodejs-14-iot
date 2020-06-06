@@ -4,6 +4,7 @@ const http = require('http')
 const debug = require('debug')('platziverse:api:server')
 const chalk = require('chalk')
 const express = require('express')
+const { handleError } = require('platziverse-utils');
 
 const api = require('./api')
 
@@ -23,17 +24,6 @@ app.use((err, req, res, next) => {
     res.status(500).send({ error: err.message })
 })
 
-function handleFatalError (err) {
-    console.error(`${chalk.red('[Fatal Error]')} ${err.message}`)
-    console.error(err.stack)
-    process.exit(1)
-}
-
-function handleError (err) {
-    console.error(`${chalk.red('[Error]')} ${err.message}`)
-    console.error(err.stack)
-}
-
 const server = http.createServer(app)
 
 /**
@@ -46,13 +36,14 @@ if(!module.parent) {
     * que no fueron manejadas
     */
 
-    process.on('uncaughtException', handleFatalError)
-    process.on('unhandledRejection', handleFatalError)
+    process.on('uncaughtException', handleError.fatal )
+    process.on('unhandledRejection', handleError.fatal )
 
     server.listen(port, () => {
         console.log(`${chalk.green('[platziverse-api]')} server listening on port ${port}`)
     })
 }
+
 
 module.exports = server
 
