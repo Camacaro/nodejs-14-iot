@@ -25,6 +25,11 @@ const screen = blessed.screen()
 
 const agents = new Map()
 const agentMetrics = new Map()
+let extended = []
+let selected = {
+    uuid: null,
+    type: null
+}
 
 const grid = new contrib.grid({
     rows: 1,
@@ -39,6 +44,9 @@ const tree = grid.set(0, 0, 1, 1, contrib.tree, {
 
 const line = grid.set(0, 1, 1, 3, contrib.line, {
     label: 'Metric',
+    showLegend: true,
+    minY: 0,
+    xPadding: 5
 })
 
 agent.on('agent/connected', payload => {
@@ -101,9 +109,32 @@ agent.on('agent/message', payload => {
     renderData()
 })
 
+
+/**
+ * Con esto tomaremos la seleccion de la pantalla
+ * extender los agentes
+ */
+tree.on('select', node => {
+    const { uuid, type } = node
+
+    // si fue seleccionado un agente
+    if( node.agent ) {
+        // si se encuentra extendido el node agregamos el agente
+        node.extended ? extended.push(uuid) : extended = extended.filter(e => e !== uuid )
+        selected.type = null
+        selected.uuid = null
+        return
+    }
+
+    selected.uuid = uuid
+    selected.type = type
+
+    renderMetric()
+})
+
 function renderData() {
     const treeData = {}
-
+    let idx = 0
     for (let [uuid, val] of agents ) {
         
         const title = `${val.name} - (${val.pid})`
@@ -111,11 +142,12 @@ function renderData() {
         treeData[title] = {
             uuid,
             agent: true,
+            extended: extended.includes(uuid),
             children: {}
         }
 
         const metrics = agentMetrics.get(uuid)
-
+        
         // metrics = {
         //     rss: [200, 300, 100],
         //     memory: [0.1, 0.2, 0.3],
@@ -129,7 +161,7 @@ function renderData() {
                 metric: true
             }
 
-            const metricName = ` ${type}`
+            const metricName = ` ${type} ${" ".repeat(1000)} ${idx++}`
 
             treeData[title].children[metricName] = metric
             // {
@@ -149,6 +181,35 @@ function renderData() {
         children: treeData
     })
 
+    // screen.render()
+    renderMetric()
+}
+
+function renderMetric () {
+    if(!selected.uuid && !selected.type) {
+        line.setData(
+            [
+                {
+                    x: [], 
+                    y: [],
+                    title: ''
+                }
+            ]
+        )
+
+        screen.render()
+        return;
+    }
+
+    const metrics = agentMetrics.get(selected.uuid)
+    const values = metrics[selected.type]
+    const series = [{
+        title: selected.type,
+        x: values.map( v => v.timestamp).slice(-10), // obtener los ultimos 10
+        y: values.map( v => v.value ).slice(-10) // obtener los ultimos 10
+    }]
+    
+    line.setData(series)
     screen.render()
 }
 
