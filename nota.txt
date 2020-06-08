@@ -9,7 +9,7 @@ GRANT ALL PRIVILEGES ON DATABASE platziverse TO platzi;
 con el const debug = require('debug')('platziverse:db:setup')
 puedo hacer logs a los archivos y saber donde fue 
 
-Hacer preguntras con la consola
+Hacer preguntas con la consola
 npm i inquirer
 
 estilizar string en consola
@@ -45,3 +45,21 @@ npm run start-dev
 
 3 platziver-agent
 node example/oneAgent.js o example/veryAgents.js
+
+
+/*************************************************************/
+
+Depurar Codigo
+
+cons require('longjohn') puedo ver un detalle de los errores que ocurran
+en las funciones asyncronas, dandome el numero exacto de linea de la funcion
+
+Levantar debg en goole 
+$ node server.js --inspect 
+
+Abrir chrome 
+chrome://inspect/#devices
+
+Puedo hacer los break point y los profile como memorys 
+para ver la performance de la app
+
