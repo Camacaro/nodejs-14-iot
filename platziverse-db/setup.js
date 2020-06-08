@@ -9,6 +9,9 @@ const argv = require ('yargs')
   .boolean(['y','yes'])
   .argv
 
+// node setup.js --yes
+// node setup.js --y
+// npm run setup -- --yes
 // console.dir([ argv.y, argv.yes ]);
 // console.dir(argv._);
 
