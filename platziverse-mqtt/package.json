@@ -21,6 +21,6 @@
     "mosca": "^2.8.3",
     "platziverse-db": "file:../platziverse-db",
     "platziverse-utils": "file:../platziverse-utils",
-    "redis": "^3.0.2"
+    "redis": "^3.1.1"
   }
 }
